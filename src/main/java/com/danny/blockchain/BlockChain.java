@@ -1,5 +1,8 @@
 package com.danny.blockchain;
 
+import com.danny.blockchain.coin.Transaction;
+import com.danny.blockchain.coin.Wallet;
+import com.danny.blockchain.util.StringUtil;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
@@ -17,9 +20,27 @@ public class BlockChain {
     /* 区块链 */
     public static ArrayList<Block> blockchain = new ArrayList<Block>();
     /* 算力难度 */
-    public static int difficuty = 4;
+    public static int difficuty = 6;
 
     public static void main(String[] args) {
+
+        //创建两个钱包
+        Wallet walletA=new Wallet();
+        Wallet walletB=new Wallet();
+        //打印交易发送方钱包的私钥和公钥
+        System.out.println("Private and Public keys:");
+        System.out.println(StringUtil.getStringFromKey(walletA.privateKey));
+        System.out.println(StringUtil.getStringFromKey(walletA.publicKey));
+        //创建一个交易
+        Transaction transaction=new Transaction(walletA.publicKey,walletB.publicKey,5,null);
+        //用交易发送方钱包的私钥为交易签名（发送方钱包地址+接收方钱包地址+交易数额）
+        transaction.generateSignature(walletA.privateKey);
+        //打印该交易的签名
+        System.out.println("Is signature verified："+transaction.verifySignature());
+    }
+
+    public void mineCoinTest1(){
+        long startTime=System.currentTimeMillis();
         blockchain.add(new Block("Hi im the first block", "0"));
         System.out.println("Trying to Mine Block 1 ...");
         blockchain.get(0).mineBlock(difficuty);
@@ -32,9 +53,9 @@ public class BlockChain {
         System.out.println("Trying to Mine Block 3 ...");
         blockchain.get(2).mineBlock(difficuty);
 
+        System.out.println("耗时："+(System.currentTimeMillis()-startTime));
         String blockchainJson = new GsonBuilder().setPrettyPrinting().create().toJson(blockchain);
         System.out.println(blockchainJson);
-
     }
 
     /**

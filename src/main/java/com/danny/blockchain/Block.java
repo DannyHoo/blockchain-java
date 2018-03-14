@@ -1,5 +1,7 @@
 package com.danny.blockchain;
 
+import com.danny.blockchain.util.StringUtil;
+
 import java.util.Date;
 
 /**
@@ -47,11 +49,11 @@ public class Block {
      */
     public void mineBlock(int difficulty) {
         String target = new String(new char[difficulty]).replace("\0", "0");
-        System.out.println("target = " + target);
+        //System.out.println("target = " + target);
         while (!hash.substring(0, difficulty).equals(target)) {
             nonce++;
             hash = calculateHash();
-            System.out.println("hash = " + hash);
+            //System.out.println("hash = " + hash);
             /*try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
