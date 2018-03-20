@@ -35,6 +35,13 @@ public class StringUtil {
         }
     }
 
+    /**
+     * 根据私钥和数据生成签名
+     *
+     * @param privateKey
+     * @param input
+     * @return
+     */
     public static byte[] applyECDSASig(PrivateKey privateKey, String input) {
         Signature dsa;
         byte[] output = new byte[0];
@@ -51,14 +58,21 @@ public class StringUtil {
         return output;
     }
 
-    //Verifies a String signature
+    /**
+     * 根据公钥、签名、数据验证签名合法性
+     *
+     * @param publicKey
+     * @param data
+     * @param signature
+     * @return
+     */
     public static boolean verifyECDSASig(PublicKey publicKey, String data, byte[] signature) {
         try {
             Signature ecdsaVerify = Signature.getInstance("ECDSA", "BC");
             ecdsaVerify.initVerify(publicKey);
             ecdsaVerify.update(data.getBytes());
             return ecdsaVerify.verify(signature);
-        }catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

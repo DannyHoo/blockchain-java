@@ -22,7 +22,7 @@ public class Block {
     /* 时间戳 */
     private long timestamp;
     /* 随机数值（用于设置算力值）*/
-    private int nonce;
+    private long nonce;
 
     public Block(String data, String previousHash) {
         this.data = data;
@@ -38,7 +38,7 @@ public class Block {
      */
     public String calculateHash() {
         String hash = StringUtil.applySha256(
-                previousHash + Long.toString(timestamp) + Integer.toString(nonce) + data);
+                previousHash + Long.toString(timestamp) + Long.toString(nonce) + data);
         return hash;
     }
 
@@ -53,14 +53,8 @@ public class Block {
         while (!hash.substring(0, difficulty).equals(target)) {
             nonce++;
             hash = calculateHash();
-            //System.out.println("hash = " + hash);
-            /*try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
         }
-        System.out.println("Block Mined!!! : " + hash);
+        System.out.println("Block Mined!!! :" + hash+"; nonce:"+nonce);
     }
 
 }

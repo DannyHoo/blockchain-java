@@ -62,10 +62,11 @@ public class Transaction {
     }
 
     /**
-     * 为所有我们不希望被篡改的数据签名
+     * 为本次交易的相关数据生成签名
      * 现实中，可能希望签名更多信息，例如使用的输出/输入/时间戳
+     * 用交易发送方的秘钥来签名
      *
-     * @param privateKey
+     * @param privateKey 交易发送方的秘钥
      */
     public void generateSignature(PrivateKey privateKey) {
         String data = StringUtil.getStringFromKey(sender) +
@@ -75,9 +76,10 @@ public class Transaction {
     }
 
     /**
-     * 验证签名是否合法
-     * 签名将由矿工验证，只有签名验证成功后交易才能被添加到区块中去。
+     * 验证本次交易签名是否合法
+     * 签名由矿工验证，只有签名验证成功后交易才能被添加到区块中去。
      * 检查区块链的有效性时，也可以检查签名
+     *
      * @return
      */
     public boolean verifySignature() {
