@@ -14,13 +14,17 @@ import java.security.PublicKey;
  * @Created on 2018-03-14 17:35:00
  */
 public class TransactionOutput {
-
+    /* 此输出的Hash */
     public String id;
+    /* 此输出的新的拥有者的公钥*/
     public PublicKey reciepient;
+    /* 此输出的数额 */
     public float value;
+    /* 创建此输出的输出的id（解释略绕啊~） */
     public String parentTransactionId;
 
-    public TransactionOutput(String id, PublicKey reciepient, float value, String parentTransactionId) {
+
+    public TransactionOutput(PublicKey reciepient, float value, String parentTransactionId) {
         this.reciepient = reciepient;
         this.value = value;
         this.parentTransactionId = parentTransactionId;
@@ -29,5 +33,15 @@ public class TransactionOutput {
                         + String.valueOf(value)
                         + parentTransactionId
         );
+    }
+
+    /**
+     * 判断此输出是否指向(属于)本人
+     *
+     * @param publicKey
+     * @return
+     */
+    public boolean isMine(PublicKey publicKey) {
+        return (publicKey == reciepient);
     }
 }

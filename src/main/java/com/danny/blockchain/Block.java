@@ -1,7 +1,9 @@
 package com.danny.blockchain;
 
+import com.danny.blockchain.coin.Transaction;
 import com.danny.blockchain.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -18,14 +20,15 @@ public class Block {
     /* 前一个区块的哈希*/
     public String previousHash;
     /* 区块数据 */
-    private String data;
+    //private String data;
+    public String marketRoot;//计算区块hash的时候赋值
+    public ArrayList<Transaction> transactions = new ArrayList<Transaction>();
     /* 时间戳 */
-    private long timestamp;
+    public long timestamp;
     /* 随机数值（用于设置算力值）*/
-    private long nonce;
+    public long nonce;
 
-    public Block(String data, String previousHash) {
-        this.data = data;
+    public Block(String previousHash) {
         this.previousHash = previousHash;
         this.timestamp = new Date().getTime();
         this.hash = calculateHash();
@@ -38,7 +41,7 @@ public class Block {
      */
     public String calculateHash() {
         String hash = StringUtil.applySha256(
-                previousHash + Long.toString(timestamp) + Long.toString(nonce) + data);
+                previousHash + Long.toString(timestamp) + Long.toString(nonce) + marketRoot);
         return hash;
     }
 
@@ -48,13 +51,32 @@ public class Block {
      * @param difficulty
      */
     public void mineBlock(int difficulty) {
-        String target = new String(new char[difficulty]).replace("\0", "0");
+        marketRoot = StringUtil.getMarketRoot(transactions);
+        String target = StringUtil.getDificultyString(difficulty);
         //System.out.println("target = " + target);
         while (!hash.substring(0, difficulty).equals(target)) {
             nonce++;
             hash = calculateHash();
         }
-        System.out.println("Block Mined!!! :" + hash+"; nonce:"+nonce);
+        System.out.println("Block Mined!!! :" + hash + "; nonce:" + nonce);
     }
 
+    /**
+     * 向区块中添加交易
+     *
+     * @param transaction
+     * @return
+     */
+    public boolean addTransaction(Transaction transaction) {
+        if (transaction == null) return false;
+        if (previousHash != "0") {
+            if (transaction.processTransaction() != true) {
+                System.out.println("Transaction failed to process. Discarded.");
+                return false;
+            }
+        }
+        transactions.add(transaction);
+        System.out.println("Transaction Successfully added to Block");
+        return true;
+    }
 }
